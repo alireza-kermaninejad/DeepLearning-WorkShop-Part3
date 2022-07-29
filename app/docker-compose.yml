@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  flask_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    networks:
+      - app
+    container_name: flask_app
+  tensorflow_serving:
+    image: tensorflow/serving
+    ports:
+      - '8501:8501'
+    environment:
+      - MODEL_NAME=vcd_models
+    volumes:
+      - type: bind
+        source: ./vcd_models/
+        target: /models/vcd_models/1
+    networks:
+      - app
+    container_name: vcd_tf_serving
+networks:
+  app:
+    driver: bridge
+    
